@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Local Bus — the highway's radio</title>
+<meta name="description" content="Local Bus: an always-on radio of the songs blasting out of Nepal's public buses, over an animated hill highway at dusk. Powered by Spotify." />
+<meta name="theme-color" content="#141b30" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Rubik:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#141b30;
+    --sky-mid:#2b3e68;
+    --sky-horizon:#e8703a;
+    --sky-glow:#f7c15f;
+    --hill-far:#3d5586;
+    --hill-mid:#26375c;
+    --hill-near:#131c34;
+    --marigold:#f5b942;
+    --bus-red:#d94f35;
+    --bus-red-dark:#a83a26;
+    --cream:#fbf3e4;
+    --cream-dim:#cdbfa2;
+    --ink:#0c1120;
+    --glass:rgba(10,14,26,0.5);
+    --glass-strong:rgba(8,11,22,0.72);
+    --glass-line:rgba(251,243,228,0.14);
+    --spotify:#1db954;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:'Rubik',sans-serif;
+    color:var(--cream);
+    background:var(--sky-top);
+    overflow-x:hidden;
+  }
+  h1,h2{font-family:'Yatra One',system-ui,sans-serif; margin:0; font-weight:400;}
+  .mono{font-family:'Space Mono',monospace;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  /* ===== Background scene ===== */
+  .scene{
+    position:fixed; inset:0; z-index:-2; overflow:hidden;
+    background:linear-gradient(180deg,var(--sky-top) 0%, var(--sky-mid) 42%, var(--sky-horizon) 86%, var(--sky-glow) 100%);
+  }
+  .stars{position:absolute; inset:0 0 55% 0; background-image:
+      radial-gradient(2px 2px at 10% 20%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 25% 10%, #fff, transparent),
+      radial-gradient(2px 2px at 40% 30%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 60% 15%, #fff, transparent),
+      radial-gradient(2px 2px at 75% 25%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 90% 12%, #fff, transparent),
+      radial-gradient(1.5px 1.5px at 55% 35%, #fff, transparent);
+    opacity:0.5; animation:twinkle 5s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle{from{opacity:.28} to{opacity:.65}}
+
+  .sun{
+    position:absolute; left:50%; top:36%; width:160px; height:160px; border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, #ffe6a8 0%, var(--marigold) 55%, rgba(245,185,66,0) 75%);
+    filter:blur(1px); box-shadow:0 0 100px 34px rgba(245,185,66,0.32);
+  }
+
+  .stupa{position:absolute; left:14%; bottom:19%; width:46px; opacity:0.55;}
+  .stupa .dome{width:46px; height:23px; border-radius:46px 46px 0 0; background:var(--hill-near);}
+  .stupa .spire{width:6px; height:30px; background:var(--hill-near); margin:0 auto; clip-path:polygon(50% 0, 0 100%, 100% 100%);}
+
+  .hill-layer{position:absolute; bottom:0; left:0; width:200%; height:46%; display:flex;}
+  .hill-layer svg{width:50%; height:100%; display:block; flex:none;}
+  .hill-far{bottom:16%; animation:driftLeft 95s linear infinite;}
+  .hill-mid{bottom:8%; animation:driftLeft 58s linear infinite;}
+  .hill-near{bottom:0; height:38%; animation:driftLeft 34s linear infinite;}
+  @keyframes driftLeft{from{transform:translateX(0);} to{transform:translateX(-50%);}}
+
+  .mist{position:absolute; bottom:12%; left:0; width:220%; height:10%;
+    background:repeating-linear-gradient(90deg, rgba(251,243,228,0.09) 0 120px, transparent 120px 260px);
+    filter:blur(6px); animation:driftLeft 72s linear infinite;
+  }
+
+  .road{position:absolute; left:0; right:0; bottom:0; height:9%; background:linear-gradient(180deg,#20293e,#12172a); border-top:3px solid rgba(251,243,228,0.14);}
+  .road::before{
+    content:""; position:absolute; top:44%; left:0; width:220%; height:6px;
+    background-image:repeating-linear-gradient(90deg, var(--marigold) 0 42px, transparent 42px 84px);
+    opacity:0.7; animation:driftLeft 6s linear infinite;
+  }
+
+  .grain{position:fixed; inset:0; z-index:-1; pointer-events:none; opacity:0.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .vignette{position:fixed; inset:0; z-index:-1; pointer-events:none; background:radial-gradient(ellipse at 50% 28%, rgba(0,0,0,0) 38%, rgba(6,9,20,0.58) 100%);}
+
+  .bus-wrap{
+    position:absolute; left:50%; bottom:6.5%; width:min(320px,60vw); transform:translateX(-50%);
+    animation:busBob 2.6s ease-in-out infinite; filter:drop-shadow(0 14px 18px rgba(0,0,0,0.45));
+  }
+  @keyframes busBob{0%,100%{transform:translateX(-50%) translateY(0) rotate(0deg);} 50%{transform:translateX(-50%) translateY(-4px) rotate(-0.6deg);}}
+  .bus{position:relative; width:100%; aspect-ratio:5/2.15;}
+  .bus .body{position:absolute; inset:8% 3% 30% 3%; background:linear-gradient(180deg,var(--bus-red) 0%, var(--bus-red-dark) 100%); border-radius:16px 26px 10px 10px; box-shadow:inset 0 -6px 0 rgba(0,0,0,0.15);}
+  .bus .stripe{position:absolute; left:3%; right:3%; bottom:30%; height:9%; background:var(--marigold);}
+  .bus .windows{position:absolute; left:6%; right:8%; top:13%; height:32%; display:flex; gap:4%;}
+  .bus .windows span{flex:1; background:linear-gradient(160deg,#bfe7ea,#7fb9c4); border-radius:4px; box-shadow:inset 0 0 0 2px rgba(20,20,30,0.35);}
+  .bus .roofrack{position:absolute; left:8%; right:16%; top:2%; height:5%; background:#0f1830; border-radius:3px;}
+  .bus .bag{position:absolute; top:-32%; width:9%; height:34%; background:var(--cream-dim); border-radius:3px 3px 0 0; box-shadow:inset 0 0 0 1px rgba(0,0,0,0.2);}
+  .bus .bag.b1{left:12%;} .bus .bag.b2{left:24%; background:#c98d4f;} .bus .bag.b3{left:36%;}
+  .bus .pennants{position:absolute; top:1%; left:6%; right:10%; height:6%; display:flex; justify-content:space-between;}
+  .bus .pennants i{width:4.2%; height:100%; background:var(--marigold); clip-path:polygon(0 0,100% 0,50% 100%);}
+  .bus .pennants i:nth-child(3n+2){background:var(--cream);}
+  .bus .pennants i:nth-child(3n){background:#5aa0a8;}
+  .bus .board{position:absolute; right:5%; top:15%; width:18%; height:12%; background:#0c1120; border-radius:2px; display:flex; align-items:center; justify-content:center;}
+  .bus .board span{font-family:'Space Mono',monospace; font-size:5px; color:var(--marigold); letter-spacing:0.5px;}
+  .bus .headlight{position:absolute; right:1%; bottom:32%; width:7%; height:9%; border-radius:50%; background:radial-gradient(circle, #fff6d8, var(--marigold) 70%); box-shadow:0 0 22px 10px rgba(245,185,66,0.55);}
+  .bus .taillight{position:absolute; left:1%; bottom:32%; width:5%; height:7%; border-radius:50%; background:#ff5b4d; box-shadow:0 0 10px 4px rgba(255,91,77,0.6);}
+  .bus .wheel{position:absolute; bottom:-4%; width:14%; aspect-ratio:1; border-radius:50%; background:#12141c; box-shadow:inset 0 0 0 4px #3a3f4d;}
+  .bus .wheel::after{content:""; position:absolute; inset:32%; border-radius:50%; background:#8b94a8;}
+  .bus .wheel.w1{left:14%;} .bus .wheel.w2{right:20%;}
+  .bus .wheel span{position:absolute; inset:0; animation:spin 0.7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .bus .side-text{position:absolute; left:9%; bottom:34%; font-family:'Yatra One'; font-size:10px; color:var(--cream); letter-spacing:0.5px; text-shadow:0 1px 0 rgba(0,0,0,0.3);}
+
+  .smoke{position:absolute; left:-2%; bottom:20%; width:10px; height:10px; border-radius:50%; background:rgba(215,215,220,0.55); filter:blur(1px); animation:puff 2.2s ease-out infinite;}
+  .smoke.s2{animation-delay:0.7s;} .smoke.s3{animation-delay:1.4s;}
+  @keyframes puff{0%{transform:translate(0,0) scale(0.4); opacity:0.55;} 100%{transform:translate(-26px,-22px) scale(1.6); opacity:0;}}
+
+  @media (prefers-reduced-motion: reduce){
+    .hill-far,.hill-mid,.hill-near,.mist,.road::before,.bus-wrap,.wheel span,.smoke,.stars{animation:none !important;}
+  }
+
+  /* ===== Top chrome ===== */
+  .clock{position:fixed; top:18px; left:20px; z-index:20; font-family:'Space Mono',monospace; font-size:13px; color:var(--cream-dim); letter-spacing:0.05em;}
+  .topbar{position:fixed; top:0; right:0; left:0; z-index:20; display:flex; align-items:center; justify-content:flex-end; gap:10px; padding:16px 20px; pointer-events:none;}
+  .topbar > *{pointer-events:auto;}
+  .pill{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; text-decoration:none; color:var(--cream);
+    background:rgba(255,255,255,0.06); border:1px solid var(--glass-line); border-radius:999px; padding:9px 15px; backdrop-filter:blur(8px);
+    transition:background .2s, transform .15s;}
+  .pill:hover{background:rgba(255,255,255,0.13); transform:translateY(-1px);}
+  .pill.spotify{background:var(--spotify); border-color:var(--spotify); color:#04140a;}
+  .pill.spotify:hover{background:#1ed760;}
+  .live-badge{display:inline-flex; align-items:center; gap:7px; font-family:'Space Mono',monospace; font-size:12px; color:var(--cream-dim); background:rgba(0,0,0,0.28); border:1px solid var(--glass-line); border-radius:999px; padding:8px 13px; backdrop-filter:blur(8px);}
+  .live-dot{width:8px; height:8px; border-radius:50%; background:#ff5b4d; animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,91,77,0.55);}70%{box-shadow:0 0 0 8px rgba(255,91,77,0);}100%{box-shadow:0 0 0 0 rgba(255,91,77,0);}}
+
+  /* ===== Layout ===== */
+  main{max-width:920px; margin:0 auto; padding:0 20px 120px;}
+  .hero{min-height:92vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:100px 20px 40px;}
+  .eyebrow{font-family:'Space Mono',monospace; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--marigold); margin-bottom:18px;}
+  .brand-dev{font-size:clamp(56px,14vw,132px); line-height:1.02; text-shadow:0 6px 30px rgba(0,0,0,0.4);}
+  .brand-en{font-family:'Space Mono',monospace; font-size:clamp(12px,2vw,15px); letter-spacing:0.4em; text-transform:uppercase; color:var(--cream-dim); margin-top:14px;}
+  .tagline{color:var(--cream-dim); max-width:46ch; font-size:15.5px; line-height:1.6; margin:26px 0 0;}
+  .scroll-cue{margin-top:56px; font-family:'Space Mono',monospace; font-size:11px; color:var(--cream-dim); letter-spacing:0.1em; opacity:0.7;}
+
+  section{padding:54px 0; border-top:1px solid rgba(251,243,228,0.09);}
+  section h2{font-size:clamp(26px,4vw,36px); margin-bottom:20px;}
+
+  .route-board{display:flex; flex-wrap:wrap; gap:12px;}
+  .route-chip{font-family:'Space Mono',monospace; font-size:12.5px; letter-spacing:0.02em; background:#0f1830; color:var(--marigold); border:2px solid #1e2b4d; border-radius:6px; padding:10px 14px; cursor:pointer; text-align:left;}
+  .route-chip small{display:block; color:var(--cream-dim); font-family:'Rubik'; font-size:11px; margin-top:3px;}
+  .route-chip.active{background:var(--marigold); color:#231704; border-color:var(--marigold);}
+  .route-chip.active small{color:#4a3a10;}
+
+  .manifest-list{list-style:none; margin:0; padding:0; counter-reset:stop;}
+  .manifest-item{counter-increment:stop; display:grid; grid-template-columns:34px 1fr auto auto; align-items:center; gap:14px; padding:14px 8px; border-bottom:1px solid rgba(251,243,228,0.08);}
+  .manifest-item::before{content:counter(stop,decimal-leading-zero); font-family:'Space Mono',monospace; color:var(--marigold); font-size:13px;}
+  .manifest-item .song{font-weight:600; font-size:14.5px;}
+  .manifest-item .singer{color:var(--cream-dim); font-size:12.5px; margin-top:2px;}
+  .manifest-item .route-tag{font-family:'Space Mono',monospace; font-size:10.5px; color:var(--cream-dim); border:1px solid var(--glass-line); border-radius:5px; padding:3px 7px; white-space:nowrap;}
+  .manifest-item button{background:none; border:1px solid var(--glass-line); color:var(--cream); border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:13px;}
+  .manifest-item button:hover{background:var(--spotify); border-color:var(--spotify); color:#04140a;}
+  .manifest-item.now button{background:var(--marigold); border-color:var(--marigold); color:#231704;}
+  .manifest-item.now .song{color:var(--marigold);}
+
+  .about p{max-width:62ch; color:var(--cream-dim); line-height:1.75; font-size:15px;}
+  .about strong{color:var(--cream);}
+
+  footer{max-width:920px; margin:0 auto; padding:30px 20px 160px; font-size:12.5px; color:var(--cream-dim); line-height:1.7;}
+  footer a{color:var(--marigold); text-decoration:none;}
+
+  /* ===== Fixed bottom playbar ===== */
+  .playbar-wrap{position:fixed; left:0; right:0; bottom:0; z-index:30; display:flex; justify-content:center; padding:14px 16px; pointer-events:none;}
+  .playbar{
+    pointer-events:auto; width:100%; max-width:620px;
+    background:var(--glass-strong); border:1px solid var(--glass-line); border-radius:18px;
+    backdrop-filter:blur(14px); box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    padding:14px 16px 10px;
+  }
+  .playbar-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;}
+  .playbar-route{font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--marigold);}
+  .playbar-nowqueued{font-size:12px; color:var(--cream-dim);}
+  .playbar-body{display:flex; align-items:center; gap:8px;}
+  .pb-skip{flex:none; width:38px; height:38px; border-radius:50%; border:1px solid var(--glass-line); background:rgba(255,255,255,0.05); color:var(--cream); font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s;}
+  .pb-skip:hover{background:rgba(255,255,255,0.14);}
+  .pb-embed-wrap{flex:1; min-width:0; border-radius:12px; overflow:hidden; background:#0a0d16; min-height:80px; display:flex; align-items:center; justify-content:center;}
+  .pb-embed-wrap iframe{display:block; width:100%; border:0;}
+  .pb-embed-status{font-family:'Space Mono',monospace; font-size:11px; color:var(--cream-dim); padding:0 12px; text-align:center;}
+  .playbar-foot{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:8px; font-size:11px; color:var(--cream-dim);}
+  .playbar-foot a{color:var(--marigold); text-decoration:none; font-weight:600;}
+
+  @media (max-width:560px){
+    .manifest-item{grid-template-columns:24px 1fr auto;}
+    .manifest-item .route-tag{display:none;}
+    .topbar{justify-content:flex-end;}
+    .pill span.pill-text{display:none;}
+    .clock{font-size:11px;}
+    .playbar{max-width:100%;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="scene" aria-hidden="true">
+    <div class="stars"></div>
+    <div class="sun"></div>
+
+    <div class="hill-layer hill-far">
+      <svg viewBox="0 0 720 260" preserveAspectRatio="none"><polygon fill="var(--hill-far)" points="0,260 0,150 60,110 130,160 200,80 260,140 330,60 400,130 470,90 540,150 610,100 680,150 720,120 720,260"/></svg>
+      <svg viewBox="0 0 720 260" preserveAspectRatio="none"><polygon fill="var(--hill-far)" points="0,260 0,150 60,110 130,160 200,80 260,140 330,60 400,130 470,90 540,150 610,100 680,150 720,120 720,260"/></svg>
+    </div>
+    <div class="hill-layer hill-mid">
+      <svg viewBox="0 0 720 220" preserveAspectRatio="none"><polygon fill="var(--hill-mid)" points="0,220 0,140 80,170 150,100 230,160 300,120 380,175 450,110 520,165 600,130 680,170 720,150 720,220"/></svg>
+      <svg viewBox="0 0 720 220" preserveAspectRatio="none"><polygon fill="var(--hill-mid)" points="0,220 0,140 80,170 150,100 230,160 300,120 380,175 450,110 520,165 600,130 680,170 720,150 720,220"/></svg>
+    </div>
+    <div class="mist"></div>
+    <div class="stupa"><div class="dome"></div><div class="spire"></div></div>
+    <div class="hill-layer hill-near">
+      <svg viewBox="0 0 720 170" preserveAspectRatio="none"><polygon fill="var(--hill-near)" points="0,170 0,110 100,140 190,90 280,135 360,100 450,145 540,105 630,140 720,115 720,170"/></svg>
+      <svg viewBox="0 0 720 170" preserveAspectRatio="none"><polygon fill="var(--hill-near)" points="0,170 0,110 100,140 190,90 280,135 360,100 450,145 540,105 630,140 720,115 720,170"/></svg>
+    </div>
+
+    <div class="road"></div>
+
+    <div class="bus-wrap">
+      <div class="smoke"></div><div class="smoke s2"></div><div class="smoke s3"></div>
+      <div class="bus">
+        <div class="pennants"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="roofrack"></div>
+        <div class="bag b1"></div><div class="bag b2"></div><div class="bag b3"></div>
+        <div class="body"></div>
+        <div class="side-text">लोकल बस</div>
+        <div class="windows"><span></span><span></span><span></span><span></span><span></span></div>
+        <div class="board"><span>पोखरा</span></div>
+        <div class="stripe"></div>
+        <div class="headlight"></div>
+        <div class="taillight"></div>
+        <div class="wheel w1"><span></span></div>
+        <div class="wheel w2"><span></span></div>
+      </div>
+    </div>
+  </div>
+  <div class="grain"></div>
+  <div class="vignette"></div>
+
+  <div class="clock" id="clock">—:—</div>
+  <div class="topbar">
+    <div class="live-badge"><span class="live-dot"></span> <span id="listenerCount">— online</span></div>
+    <a class="pill spotify" href="https://open.spotify.com" target="_blank" rel="noopener"><span class="pill-text">Spotify</span></a>
+    <a class="pill" href="#routes"><span class="pill-text">Routes</span></a>
+    <a class="pill" href="#manifest"><span class="pill-text">Songs</span></a>
+  </div>
+
+  <main>
+    <section class="hero" id="top">
+      <p class="eyebrow">🚌 On air · every highway in Nepal</p>
+      <h1 class="brand-dev">लोकल बस</h1>
+      <p class="brand-en">Local Bus · open all hours</p>
+      <p class="tagline">The stereo that never gets switched off — the same songs that blast out of speakers on the Mahendra Highway, the Pokhara–Baglung road, and every crowded local bus in between. Powered by Spotify, playing for the whole country.</p>
+      <p class="scroll-cue">↓ pick a route below, or just let it play</p>
+    </section>
+
+    <section class="routes" id="routes">
+      <h2>Pick a route</h2>
+      <div class="route-board" id="routeBoard"></div>
+    </section>
+
+    <section class="manifest" id="manifest">
+      <h2>Conductor's manifest</h2>
+      <ol class="manifest-list" id="manifestList"></ol>
+    </section>
+
+    <section class="about" id="about">
+      <h2>What is this</h2>
+      <p><strong>Local Bus</strong> is an ambient radio for a sound every Nepali commuter knows: the driver's cassette or phone, wired into a tinny speaker above the windscreen, playing the same handful of songs on loop while the bus grinds up a switchback road. It's the soundtrack of Dashain homecomings on an overstuffed night bus, of a folk tune drifting out over a Pokhara Lakeside street, of a conductor hanging out the door shouting the next stop over the chorus.</p>
+      <p>Pick a route above to change what's queued in the player below, or just let it play — the bus doesn't really stop.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Local Bus is a fan-made concept site. Audio plays through Spotify's official embedded player — nothing is hosted here, and all rights stay with the original labels, composers and performers. If you're signed in to Spotify in this browser you'll hear full tracks; otherwise Spotify plays a short preview. Song credits are put together from public label and film listings.</p>
+    <p>If you hold rights to anything here and want it taken down, email <a href="mailto:connect@arpanlamsal.com.np">connect@arpanlamsal.com.np</a> and it comes down.</p>
+    <p>© 2026 Local Bus — built by Arpan Lamsal.</p>
+  </footer>
+
+  <div class="playbar-wrap">
+    <div class="playbar">
+      <div class="playbar-head">
+        <span class="playbar-route" id="playbarRoute">Purano Sajha Classics</span>
+        <span class="playbar-nowqueued" id="playbarQueued">now queued</span>
+      </div>
+      <div class="playbar-body">
+        <button class="pb-skip" id="prevBtn" aria-label="Previous song">⏮</button>
+        <div class="pb-embed-wrap" id="pbEmbedWrap">
+          <p class="pb-embed-status" id="pbStatus">Loading the dashboard stereo…</p>
+        </div>
+        <button class="pb-skip" id="nextBtn" aria-label="Next song">⏭</button>
+      </div>
+      <div class="playbar-foot">
+        <span>Tap play inside the player to tune in.</span>
+        <a id="openSpotify" href="#" target="_blank" rel="noopener">Open in Spotify ↗</a>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  const songs = [
+    { spotifyId:"7lRgUHKQ0XlnR4PtFOIjmg", title:"Resham Firiri", artist:"Buddhi Pariyar (Original)", route:"classics" },
+    { spotifyId:"5rO8YoU8uZHUgNUztpiZta", title:"Dashain Aayo (Kodo Fulyo Barima)", artist:"Udit Narayan, Deepa Narayan Jha, Juna Prasai & Narayan Lama — Muglan", route:"dashain" },
+    { spotifyId:"5p4IoJziGeIvCBZuLXYYez", title:"Kutu Ma Kutu", artist:"Rajan Raj Siwakoti, Melina Rai, Rajan Ishan — Dui Rupaiyan", route:"highway" },
+    { spotifyId:"3InRkuJj81zjC5MWlFR6rN", title:"Hataarindai, Bataasindai", artist:"Sajjan Raj Vaidya", route:"night" },
+    { spotifyId:"4qnNDDkDkXrZMSJzR8Tv7w", title:"Chiso Chiso Hawa Sarara", artist:"The Sky Band", route:"dohori" }
+  ];
+
+  const routes = [
+    { key:"classics", name:"Purano Sajha Classics", note:"old-school folk" },
+    { key:"dashain",  name:"Dashain Ghar Farkane", note:"heading home" },
+    { key:"highway",  name:"Highway Pop Hits", note:"loud & fast" },
+    { key:"night",    name:"Raatko Highway", note:"night bus, low volume" },
+    { key:"dohori",   name:"Lok Dohori Raat", note:"call & response" }
+  ];
+
+  let current = 0;
+  const routeBoard = document.getElementById('routeBoard');
+  const manifestList = document.getElementById('manifestList');
+  const pbEmbedWrap = document.getElementById('pbEmbedWrap');
+  const pbStatus = document.getElementById('pbStatus');
+  const playbarRoute = document.getElementById('playbarRoute');
+  const playbarQueued = document.getElementById('playbarQueued');
+  const openSpotify = document.getElementById('openSpotify');
+  const listenerCount = document.getElementById('listenerCount');
+  let activeRoute = null;
+
+  function routeMetaFor(key){ return routes.find(r=>r.key===key); }
+
+  function renderRoutes(){
+    routeBoard.innerHTML = '';
+    routes.forEach(r=>{
+      const btn = document.createElement('button');
+      btn.className = 'route-chip' + (activeRoute===r.key ? ' active':'');
+      btn.innerHTML = r.name + '<small>' + r.note + '</small>';
+      btn.addEventListener('click', ()=>{
+        activeRoute = (activeRoute===r.key) ? null : r.key;
+        const idx = songs.findIndex(s=>s.route===r.key);
+        if(activeRoute && idx>-1){ loadSong(idx); }
+        renderRoutes();
+        renderManifest();
+      });
+      routeBoard.appendChild(btn);
+    });
+  }
+
+  function renderManifest(){
+    manifestList.innerHTML = '';
+    songs.forEach((s,i)=>{
+      const li = document.createElement('li');
+      li.className = 'manifest-item' + (i===current ? ' now':'');
+      const rm = routeMetaFor(s.route);
+      li.innerHTML =
+        '<div class="song-wrap"><div class="song">'+s.title+'</div><div class="singer">'+s.artist+'</div></div>' +
+        '<span class="route-tag">'+(rm? rm.name : '')+'</span>' +
+        '<button aria-label="Play '+s.title+'">'+(i===current ? '●' : '▶')+'</button>';
+      li.querySelector('button').addEventListener('click', ()=> loadSong(i));
+      manifestList.appendChild(li);
+    });
+  }
+
+  function loadSong(index){
+    current = index;
+    const s = songs[index];
+    const rm = routeMetaFor(s.route);
+    playbarRoute.textContent = rm ? rm.name : 'Local Bus';
+    playbarQueued.textContent = s.title + ' — ' + s.artist;
+    openSpotify.href = 'https://open.spotify.com/track/' + s.spotifyId;
+
+    pbStatus.textContent = 'Loading the dashboard stereo…';
+    pbEmbedWrap.innerHTML = '';
+    pbEmbedWrap.appendChild(pbStatus);
+
+    const iframe = document.createElement('iframe');
+    iframe.src = 'https://open.spotify.com/embed/track/' + s.spotifyId + '?utm_source=generator&theme=0';
+    iframe.width = '100%';
+    iframe.height = '80';
+    iframe.frameBorder = '0';
+    iframe.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+    iframe.loading = 'lazy';
+    iframe.onload = function(){ pbStatus.textContent=''; };
+    iframe.onerror = function(){
+      pbStatus.textContent = 'Couldn\u2019t load Spotify\u2019s player — check your connection, or use "Open in Spotify" below.';
+    };
+    pbEmbedWrap.innerHTML = '';
+    pbEmbedWrap.appendChild(iframe);
+
+    // if the embed hasn't rendered content in a few seconds (offline / blocked), say so
+    setTimeout(()=>{
+      if(pbStatus && pbStatus.isConnected && pbStatus.textContent.indexOf('Loading') === 0){
+        pbStatus.textContent = 'Still connecting to Spotify — check your internet connection, or tap "Open in Spotify" below.';
+      }
+    }, 6000);
+
+    renderManifest();
+  }
+
+  document.getElementById('prevBtn').addEventListener('click', ()=> loadSong((current-1+songs.length)%songs.length));
+  document.getElementById('nextBtn').addEventListener('click', ()=> loadSong((current+1)%songs.length));
+
+  // live clock (viewer's local time)
+  const clockEl = document.getElementById('clock');
+  function tickClock(){
+    try{
+      clockEl.textContent = new Date().toLocaleTimeString('ne-NP', {hour:'numeric', minute:'2-digit'});
+    }catch(e){
+      clockEl.textContent = new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+    }
+  }
+  tickClock(); setInterval(tickClock, 1000);
+
+  // simulated listener count
+  let listeners = 118 + Math.floor(Math.random()*40);
+  function renderListeners(){ listenerCount.textContent = listeners.toLocaleString() + ' online'; }
+  renderListeners();
+  setInterval(()=>{
+    listeners += Math.floor(Math.random()*7) - 3;
+    if(listeners < 40) listeners = 40;
+    renderListeners();
+  }, 4000);
+
+  renderRoutes();
+  renderManifest();
+  loadSong(0);
+})();
+</script>
+</body>
+</html>
