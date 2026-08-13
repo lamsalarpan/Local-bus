@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Local Bus — the highway's radio</title>
-<meta name="description" content="Local Bus: an always-on ambient soundscape over an animated hill highway at dusk, with real curated Spotify playlists a tap away." />
+<meta name="description" content="Local Bus: an always-on local radio of original, royalty-free instrumental tracks over an animated hill highway at dusk, with the real Nepali hits a tap away on Spotify." />
 <meta name="theme-color" content="#141b30" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,11 +99,10 @@
   .topbar{position:fixed; top:0; right:0; left:0; z-index:20; display:flex; align-items:center; justify-content:flex-end; gap:10px; padding:16px 20px; pointer-events:none;}
   .topbar > *{pointer-events:auto;}
   .pill{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; text-decoration:none; color:var(--cream);
-    background:rgba(255,255,255,0.06); border:1px solid var(--glass-line); border-radius:999px; padding:9px 15px; backdrop-filter:blur(8px); transition:background .2s, transform .15s; cursor:pointer;}
+    background:rgba(255,255,255,0.06); border:1px solid var(--glass-line); border-radius:999px; padding:9px 15px; backdrop-filter:blur(8px); transition:background .2s, transform .15s;}
   .pill:hover{background:rgba(255,255,255,0.13); transform:translateY(-1px);}
   .pill.spotify{background:var(--spotify); border-color:var(--spotify); color:#04140a;}
   .pill.spotify:hover{background:#1ed760;}
-  .pill.ambience.on{background:var(--marigold); border-color:var(--marigold); color:#231704;}
   .live-badge{display:inline-flex; align-items:center; gap:7px; font-family:'Space Mono',monospace; font-size:12px; color:var(--cream-dim); background:rgba(0,0,0,0.28); border:1px solid var(--glass-line); border-radius:999px; padding:8px 13px; backdrop-filter:blur(8px);}
   .live-dot{width:8px; height:8px; border-radius:50%; background:#ff5b4d;}
   .live-dot.on{animation:pulse 1.8s infinite;}
@@ -115,13 +114,13 @@
   .eyebrow{font-family:'Space Mono',monospace; font-size:12px; letter-spacing:0.16em; text-transform:uppercase; color:var(--marigold); margin-bottom:18px;}
   .brand-dev{font-size:clamp(56px,14vw,132px); line-height:1.02; text-shadow:0 6px 30px rgba(0,0,0,0.4);}
   .brand-en{font-family:'Space Mono',monospace; font-size:clamp(12px,2vw,15px); letter-spacing:0.4em; text-transform:uppercase; color:var(--cream-dim); margin-top:14px;}
-  .tagline{color:var(--cream-dim); max-width:48ch; font-size:15.5px; line-height:1.6; margin:26px 0 0;}
+  .tagline{color:var(--cream-dim); max-width:50ch; font-size:15.5px; line-height:1.6; margin:26px 0 0;}
   .hero-cta{margin-top:30px; display:inline-flex; align-items:center; gap:10px; background:var(--marigold); color:#231704; border:none; border-radius:999px; padding:14px 26px; font-weight:700; font-size:14px; cursor:pointer; box-shadow:0 12px 28px rgba(245,185,66,0.3);}
   .scroll-cue{margin-top:30px; font-family:'Space Mono',monospace; font-size:11px; color:var(--cream-dim); letter-spacing:0.1em; opacity:0.7;}
 
   section{padding:54px 0; border-top:1px solid rgba(251,243,228,0.09);}
   section h2{font-size:clamp(26px,4vw,36px); margin-bottom:8px;}
-  .section-note{color:var(--cream-dim); font-size:14px; margin:0 0 22px;}
+  .section-note{color:var(--cream-dim); font-size:14px; margin:0 0 22px; line-height:1.6;}
 
   .route-board{display:flex; flex-wrap:wrap; gap:12px; margin-bottom:26px;}
   .route-chip{font-family:'Space Mono',monospace; font-size:12.5px; letter-spacing:0.02em; background:#0f1830; color:var(--marigold); border:2px solid #1e2b4d; border-radius:6px; padding:10px 14px; cursor:pointer; text-align:left;}
@@ -129,6 +128,7 @@
   .route-chip.active{background:var(--marigold); color:#231704; border-color:var(--marigold);}
   .route-chip.active small{color:#4a3a10;}
 
+  /* ===== local player ===== */
   .player-panel{background:var(--glass-strong); border:1px solid var(--glass-line); border-radius:20px; padding:26px; backdrop-filter:blur(12px); box-shadow:0 24px 50px rgba(0,0,0,0.4);}
   .player-top{display:flex; align-items:center; gap:16px;}
   .player-badge{flex:none; width:56px; height:56px; border-radius:14px; background:linear-gradient(160deg,var(--bus-red),var(--bus-red-dark)); display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.08);}
@@ -136,19 +136,32 @@
   .player-eyebrow{font-family:'Space Mono',monospace; font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--marigold); margin:0 0 4px;}
   .player-title{font-weight:700; font-size:17px; margin:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .player-sub{font-size:12.5px; color:var(--cream-dim); margin:3px 0 0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .player-open{flex:none; display:inline-flex; align-items:center; gap:8px; background:var(--spotify); color:#04140a; border:none; border-radius:999px; padding:12px 20px; font-weight:700; font-size:13.5px; cursor:pointer; text-decoration:none; transition:transform .15s;}
-  .player-open:hover{transform:translateY(-1px);}
-  .player-note{font-family:'Space Mono',monospace; font-size:11px; color:var(--cream-dim); margin-top:16px; text-align:center;}
+
+  .player-progress{margin-top:20px;}
+  .player-progress-track{position:relative; height:5px; border-radius:5px; background:rgba(251,243,228,0.14); cursor:pointer;}
+  .player-progress-fill{position:absolute; left:0; top:0; bottom:0; width:0%; background:var(--marigold); border-radius:5px; pointer-events:none;}
+  .player-progress-times{display:flex; justify-content:space-between; font-family:'Space Mono',monospace; font-size:10.5px; color:var(--cream-dim); margin-top:6px;}
+
+  .player-controls{display:flex; align-items:center; justify-content:center; gap:16px; margin-top:22px;}
+  .p-skip{width:42px; height:42px; border-radius:50%; border:1px solid var(--glass-line); background:rgba(255,255,255,0.05); color:var(--cream); font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .2s;}
+  .p-skip:hover{background:rgba(255,255,255,0.14);}
+  .p-play{width:60px; height:60px; border-radius:50%; border:none; background:var(--marigold); color:#231704; font-size:19px; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 24px rgba(245,185,66,0.35); transition:transform .15s;}
+  .p-play:hover{transform:scale(1.05);}
+
+  .player-volume{display:flex; align-items:center; gap:10px; margin-top:18px; padding:0 4px;}
+  .player-volume span{font-size:13px; opacity:0.8;}
+  .player-volume input{flex:1; accent-color:var(--marigold);}
+
+  .player-source{font-family:'Space Mono',monospace; font-size:10.5px; color:var(--cream-dim); margin-top:16px; text-align:center; line-height:1.6;}
+  .player-source a{color:var(--marigold); text-decoration:none;}
 
   .manifest-list{list-style:none; margin:0; padding:0; counter-reset:stop;}
-  .manifest-item{counter-increment:stop; display:grid; grid-template-columns:34px 1fr auto; align-items:center; gap:14px; padding:13px 8px; border-bottom:1px solid rgba(251,243,228,0.08); cursor:pointer;}
+  .manifest-item{counter-increment:stop; display:grid; grid-template-columns:34px 1fr auto; align-items:center; gap:14px; padding:13px 8px; border-bottom:1px solid rgba(251,243,228,0.08);}
   .manifest-item::before{content:counter(stop,decimal-leading-zero); font-family:'Space Mono',monospace; color:var(--marigold); font-size:13px;}
   .manifest-item .song{font-weight:600; font-size:14.5px;}
   .manifest-item .singer{color:var(--cream-dim); font-size:12.5px; margin-top:2px;}
   .manifest-item a{background:none; border:1px solid var(--glass-line); color:var(--cream); border-radius:50%; width:32px; height:32px; cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; text-decoration:none;}
   .manifest-item a:hover{background:var(--spotify); border-color:var(--spotify); color:#04140a;}
-  .manifest-item.now .song{color:var(--marigold);}
-  .manifest-item.now a{background:var(--marigold); border-color:var(--marigold); color:#231704;}
 
   .about p{max-width:62ch; color:var(--cream-dim); line-height:1.75; font-size:15px;}
   .about strong{color:var(--cream);}
@@ -166,8 +179,8 @@
   .mini-text{flex:1; min-width:0; font-size:12.5px;}
   .mini-text b{display:block; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .mini-text span{color:var(--cream-dim); font-size:11px;}
-  .mini-toggle{flex:none; font-family:'Space Mono',monospace; font-size:11px; border:1px solid var(--glass-line); background:rgba(255,255,255,0.06); color:var(--cream); border-radius:999px; padding:9px 14px; cursor:pointer;}
-  .mini-toggle.on{background:var(--marigold); border-color:var(--marigold); color:#231704; font-weight:700;}
+  .mini-play{flex:none; width:34px; height:34px; border-radius:50%; border:none; background:var(--marigold); color:#231704; font-size:13px; cursor:pointer;}
+  .mini-link{flex:none; font-family:'Space Mono',monospace; font-size:11px; text-decoration:none; color:var(--cream-dim); padding:9px 10px;}
 
   @media (max-width:560px){
     .manifest-item{grid-template-columns:24px 1fr auto;}
@@ -176,8 +189,6 @@
     .clock{font-size:11px;}
     .mini-text span{display:none;}
     .player-panel{padding:20px 16px;}
-    .player-top{flex-wrap:wrap;}
-    .player-open{width:100%; justify-content:center;}
   }
 </style>
 </head>
@@ -222,16 +233,13 @@
   <div class="grain"></div>
   <div class="vignette"></div>
 
-  <audio id="ambientAudio" loop preload="auto">
-    <source src="audio/ambient-loop.wav" type="audio/wav">
-  </audio>
+  <audio id="audioPlayer" preload="auto"></audio>
 
   <div class="clock" id="clock">—:—</div>
   <div class="topbar">
     <div class="live-badge"><span class="live-dot" id="liveDot"></span> <span id="listenerCount">— online</span></div>
-    <button class="pill ambience" id="ambienceToggle"><span class="pill-text">🔊 Ambience</span></button>
     <a class="pill spotify" href="https://open.spotify.com" target="_blank" rel="noopener"><span class="pill-text">Spotify</span></a>
-    <a class="pill" href="#manifest"><span class="pill-text">Singles</span></a>
+    <a class="pill" href="#manifest"><span class="pill-text">Real songs</span></a>
   </div>
 
   <main>
@@ -239,46 +247,63 @@
       <p class="eyebrow">🚌 On air · every highway in Nepal</p>
       <h1 class="brand-dev">लोकल बस</h1>
       <p class="brand-en">Local Bus · open all hours</p>
-      <p class="tagline">An always-on ambient soundscape of the road — original engine hum, rumble and a conductor's bell, no copyrighted audio involved — plus five real, curated Spotify playlists (300+ songs) a tap away for the actual music.</p>
-      <button class="hero-cta" id="heroAmbienceBtn">🔊 Start the ambience</button>
+      <p class="tagline">Five routes, five original instrumental tracks — playing straight from this page, no login, no ads, no streaming service needed. For the actual Nepali hits this site is inspired by, jump to Spotify below.</p>
+      <button class="hero-cta" id="heroPlayBtn">▶ Start the bus</button>
       <p class="scroll-cue">↓ or pick a route below</p>
     </section>
 
     <section class="routes" id="routes">
       <h2>Pick a route</h2>
-      <p class="section-note">Each route opens a real, actively-curated Spotify playlist in a new tab or the Spotify app — over 300 songs across all five, no login needed to preview, full playback if you're signed in.</p>
+      <p class="section-note">Each route plays a real, royalty-free instrumental track hosted directly on this site — public-domain (CC0) recordings, not the copyrighted songs they're named after. It's the mood, not the actual hit.</p>
       <div class="route-board" id="routeBoard"></div>
 
       <div class="player-panel" id="player">
         <div class="player-top">
           <div class="player-badge">🚌</div>
           <div class="player-meta">
-            <p class="player-eyebrow" id="playerEyebrow">Selected route</p>
+            <p class="player-eyebrow" id="playerEyebrow">Now playing</p>
             <p class="player-title" id="playerTitle">Purano Sajha Classics</p>
-            <p class="player-sub" id="playerSub">The Sound of Classic Nepali Pop · 100 songs</p>
+            <p class="player-sub" id="playerSub">"Lukewarm Banjo" · original instrumental</p>
           </div>
-          <a class="player-open" id="openSpotify" href="https://open.spotify.com" target="_blank" rel="noopener">▶ Open in Spotify</a>
         </div>
-        <p class="player-note">Opens in Spotify's own app or tab — full tracks if you're signed in there, 30-second previews if not. That part is Spotify's playback, not this site's.</p>
+
+        <div class="player-progress">
+          <div class="player-progress-track" id="progressTrack"><div class="player-progress-fill" id="progressFill"></div></div>
+          <div class="player-progress-times"><span id="timeElapsed">0:00</span><span id="timeTotal">0:00</span></div>
+        </div>
+
+        <div class="player-controls">
+          <button class="p-skip" id="prevBtn" aria-label="Previous route">⏮</button>
+          <button class="p-play" id="playBtn" aria-label="Play">▶</button>
+          <button class="p-skip" id="nextBtn" aria-label="Next route">⏭</button>
+        </div>
+
+        <div class="player-volume">
+          <span>🔉</span>
+          <input type="range" id="volumeSlider" min="0" max="100" value="70">
+          <span>🔊</span>
+        </div>
+
+        <p class="player-source">Public-domain instrumental, hosted locally · <a id="realSongLink" href="#manifest">hear the real song this route is named for →</a></p>
       </div>
     </section>
 
     <section class="manifest" id="manifest">
-      <h2>Conductor's picks</h2>
-      <p class="section-note">A handful of singles worth flagging down the bus for — tap one to update the player above and open it in Spotify.</p>
+      <h2>The real songs</h2>
+      <p class="section-note">These are the actual Nepali hits Local Bus is a tribute to — they play through Spotify, not this site, since they're copyrighted commercial recordings.</p>
       <ol class="manifest-list" id="manifestList"></ol>
     </section>
 
     <section class="about" id="about">
       <h2>What is this</h2>
-      <p><strong>Local Bus</strong> is an ambient tribute to a sound every Nepali commuter knows: the driver's cassette or phone, wired into a tinny speaker above the windscreen, playing the same handful of songs on loop while the bus grinds up a switchback road. The engine hum playing on this page is an original soundscape made for this site — no real recordings, no rights issues, works instantly for anyone. The actual songs — the ones you'd really hear on that bus — are one tap away on Spotify.</p>
-      <p>Pick a route above to browse a playlist, tap a conductor's pick for a specific song, or just leave the ambience running and imagine the rest.</p>
+      <p><strong>Local Bus</strong> is an ambient tribute to a sound every Nepali commuter knows: the driver's cassette or phone, wired into a tinny speaker above the windscreen, playing the same handful of songs on loop while the bus grinds up a switchback road. The five instrumental tracks playing on this page are real, public-domain recordings — legally free to host and stream from anywhere, which is why they can just play, instantly, for anyone. The actual songs — Resham Firiri, Dashain Aayo, and the rest — are one tap away on Spotify.</p>
+      <p>Pick a route above to change the mood, or tap a real song below to hear the genuine article.</p>
     </section>
   </main>
 
   <footer>
-    <p>Local Bus is a fan-made concept site. The background engine-hum soundscape is an original audio loop created for this project — not a copyrighted recording. The five playlists and the "Conductor's picks" singles all link out to real, existing Spotify content; nothing from Spotify is downloaded, re-hosted, or played on this page — clicking "Open in Spotify" hands playback to Spotify itself, subject to Spotify's own login and preview rules.</p>
-    <p>Playlist credits: <em>The Sound of Classic Nepali Pop</em> (The Sounds of Spotify) · <em>Dashain Songs</em> (Music Nepal Limited) · <em>Hit Nepali Movie Songs</em> (Music Nepal Limited) · <em>The Sound of Nepali Indie</em> (The Sounds of Spotify) · <em>Nepali Lok Dohori songs</em> (Yellow Tune).</p>
+    <p>Local Bus is a fan-made concept site. The five route tracks are real, public-domain (CC0 1.0) instrumental recordings, hosted locally on this site — free for any use, no attribution legally required. Original sources: <em>Lukewarm Banjo</em>, <em>Happy Whistling Ukulele</em>, <em>Journey of Hope</em>, <em>Lonely Mountain</em> and <em>Village Tarantella</em>, originally released via FreePD.com under CC0. The "real songs" list links out to Spotify for the actual copyrighted Nepali recordings this project is a tribute to — nothing copyrighted is hosted on this page.</p>
+    <p>Playlist/song credits on Spotify: Buddhi Pariyar · Udit Narayan & co. (Muglan) · Rajan Raj Siwakoti, Melina Rai & Rajan Ishan (Dui Rupaiyan) · Sajjan Raj Vaidya · The Sky Band · Narayan Gopal · Bipul Chettri · Deepak Bajracharya.</p>
     <p>If you hold rights to anything linked here and want it delisted, email <a href="mailto:connect@arpanlamsal.com.np">connect@arpanlamsal.com.np</a>.</p>
     <p>© 2026 Local Bus — built by Arpan Lamsal.</p>
   </footer>
@@ -287,21 +312,22 @@
     <div class="mini-bar">
       <span class="mini-dot" id="miniDot"></span>
       <div class="mini-text">
-        <b>Local Bus ambience</b>
-        <span id="miniSub">tap to start the soundscape</span>
+        <b id="miniTitle">Purano Sajha Classics</b>
+        <span id="miniSub">tap play to start the bus</span>
       </div>
-      <button class="mini-toggle" id="miniAmbienceToggle">🔊 Play</button>
+      <button class="mini-play" id="miniPlayBtn" aria-label="Play">▶</button>
+      <a class="mini-link" href="#player">↑</a>
     </div>
   </div>
 
 <script>
 (function(){
   const routes = [
-    { key:"classics", playlistId:"2vX9LrZiITOIYR671WhGFy", name:"Purano Sajha Classics", curator:"The Sound of Classic Nepali Pop", size:"100 songs", note:"old-school folk & pop" },
-    { key:"dashain",  playlistId:"6ctgUMKrRGS6Wj0KHRlaMw", name:"Dashain Ghar Farkane", curator:"Dashain Songs · Music Nepal Limited", size:"72 songs", note:"heading home" },
-    { key:"highway",  playlistId:"5Z2OtAPxb2cVLfsLRNWzvW", name:"Highway Movie Hits", curator:"Hit Nepali Movie Songs · Music Nepal Limited", size:"movie song chart", note:"loud & fast" },
-    { key:"night",    playlistId:"3EzrWswzL4Gvltx7R84V58", name:"Raatko Highway", curator:"The Sound of Nepali Indie", size:"Spotify editorial", note:"night bus, low volume" },
-    { key:"dohori",   playlistId:"1RD6B1UrkoMkmkPUQhEJYt", name:"Lok Dohori Raat", curator:"Nepali Lok Dohori songs · Yellow Tune", size:"65 songs", note:"call & response" }
+    { key:"classics", file:"audio/routes/classics.mp3", trackTitle:"Lukewarm Banjo", name:"Purano Sajha Classics", note:"old-school folk feel", realSong:"Resham Firiri", realSpotify:"https://open.spotify.com/track/7lRgUHKQ0XlnR4PtFOIjmg" },
+    { key:"dashain",  file:"audio/routes/dashain.mp3", trackTitle:"Happy Whistling Ukulele", name:"Dashain Ghar Farkane", note:"festive, heading home", realSong:"Dashain Aayo", realSpotify:"https://open.spotify.com/track/5rO8YoU8uZHUgNUztpiZta" },
+    { key:"highway",  file:"audio/routes/highway.mp3", trackTitle:"Journey of Hope", name:"Highway Movie Hits", note:"big, driving energy", realSong:"Kutu Ma Kutu", realSpotify:"https://open.spotify.com/track/5p4IoJziGeIvCBZuLXYYez" },
+    { key:"night",    file:"audio/routes/night.mp3", trackTitle:"Lonely Mountain", name:"Raatko Highway", note:"night bus, low volume", realSong:"Hataarindai, Bataasindai", realSpotify:"https://open.spotify.com/track/3InRkuJj81zjC5MWlFR6rN" },
+    { key:"dohori",   file:"audio/routes/dohori.mp3", trackTitle:"Village Tarantella", name:"Lok Dohori Raat", note:"lively, dance-along", realSong:"Chiso Chiso Hawa Sarara", realSpotify:"https://open.spotify.com/track/4qnNDDkDkXrZMSJzR8Tv7w" }
   ];
 
   const singles = [
@@ -316,24 +342,44 @@
     { spotifyId:"4V3GpDw3BkkXydarwgQVv5", title:"Allare", artist:"Deepak Bajracharya" }
   ];
 
-  let activeRoute = routes[0].key;
-  let activeSingle = null;
+  let current = 0;
+  let isPlaying = false;
 
+  const audio = document.getElementById('audioPlayer');
   const routeBoard = document.getElementById('routeBoard');
   const manifestList = document.getElementById('manifestList');
-  const playerEyebrow = document.getElementById('playerEyebrow');
   const playerTitle = document.getElementById('playerTitle');
   const playerSub = document.getElementById('playerSub');
-  const openSpotify = document.getElementById('openSpotify');
+  const realSongLink = document.getElementById('realSongLink');
+  const playBtn = document.getElementById('playBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressTrack = document.getElementById('progressTrack');
+  const progressFill = document.getElementById('progressFill');
+  const timeElapsed = document.getElementById('timeElapsed');
+  const timeTotal = document.getElementById('timeTotal');
+  const volumeSlider = document.getElementById('volumeSlider');
+  const heroPlayBtn = document.getElementById('heroPlayBtn');
+  const miniPlayBtn = document.getElementById('miniPlayBtn');
+  const miniTitle = document.getElementById('miniTitle');
+  const miniSub = document.getElementById('miniSub');
+  const miniDot = document.getElementById('miniDot');
+  const liveDot = document.getElementById('liveDot');
   const listenerCount = document.getElementById('listenerCount');
+
+  function fmtTime(sec){
+    if(!isFinite(sec) || sec < 0) sec = 0;
+    const m = Math.floor(sec/60), s = Math.floor(sec%60);
+    return m + ':' + (s<10 ? '0'+s : s);
+  }
 
   function renderRoutes(){
     routeBoard.innerHTML = '';
-    routes.forEach(r=>{
+    routes.forEach((r,i)=>{
       const btn = document.createElement('button');
-      btn.className = 'route-chip' + (activeRoute===r.key && !activeSingle ? ' active':'');
+      btn.className = 'route-chip' + (current===i ? ' active':'');
       btn.innerHTML = r.name + '<small>' + r.note + '</small>';
-      btn.addEventListener('click', ()=> selectRoute(r.key, true));
+      btn.addEventListener('click', ()=> loadRoute(i, true));
       routeBoard.appendChild(btn);
     });
   }
@@ -342,76 +388,82 @@
     manifestList.innerHTML = '';
     singles.forEach(s=>{
       const li = document.createElement('li');
-      li.className = 'manifest-item' + (activeSingle===s.spotifyId ? ' now':'');
+      li.className = 'manifest-item';
       li.innerHTML =
         '<div class="song-wrap"><div class="song">'+s.title+'</div><div class="singer">'+s.artist+'</div></div>' +
         '<a href="https://open.spotify.com/track/'+s.spotifyId+'" target="_blank" rel="noopener" aria-label="Open '+s.title+' in Spotify">▶</a>';
-      li.addEventListener('click', (e)=>{ if(e.target.tagName!=='A'){ selectSingle(s, false); } });
-      li.querySelector('a').addEventListener('click', ()=> selectSingle(s, false));
       manifestList.appendChild(li);
     });
   }
 
-  function selectRoute(key, openNow){
-    const r = routes.find(x=>x.key===key);
-    if(!r) return;
-    activeRoute = key; activeSingle = null;
-    playerEyebrow.textContent = 'Selected route';
+  function loadRoute(index, autoplay){
+    current = index;
+    const r = routes[index];
+    audio.src = r.file;
     playerTitle.textContent = r.name;
-    playerSub.textContent = r.curator + ' · ' + r.size;
-    openSpotify.href = 'https://open.spotify.com/playlist/' + r.playlistId;
-    if(openNow) window.open(openSpotify.href, '_blank', 'noopener');
-    renderRoutes(); renderManifest();
+    playerSub.textContent = '"' + r.trackTitle + '" · original instrumental';
+    realSongLink.textContent = 'hear "' + r.realSong + '" on Spotify →';
+    realSongLink.href = r.realSpotify;
+    miniTitle.textContent = r.name;
+    progressFill.style.width = '0%';
+    timeElapsed.textContent = '0:00';
+    timeTotal.textContent = '0:00';
+    renderRoutes();
+    if(autoplay){ playAudio(); }
   }
 
-  function selectSingle(s, openNow){
-    activeSingle = s.spotifyId;
-    playerEyebrow.textContent = 'Selected single';
-    playerTitle.textContent = s.title;
-    playerSub.textContent = s.artist;
-    openSpotify.href = 'https://open.spotify.com/track/' + s.spotifyId;
-    if(openNow) window.open(openSpotify.href, '_blank', 'noopener');
-    renderRoutes(); renderManifest();
+  function playAudio(){
+    audio.play().then(()=>{
+      isPlaying = true;
+      reflectPlayState();
+    }).catch(()=>{
+      miniSub.textContent = 'Playback needs a tap — try the play button again';
+    });
+  }
+  function pauseAudio(){
+    audio.pause();
+    isPlaying = false;
+    reflectPlayState();
+  }
+  function togglePlay(){ isPlaying ? pauseAudio() : playAudio(); }
+
+  function reflectPlayState(){
+    playBtn.textContent = isPlaying ? '⏸' : '▶';
+    heroPlayBtn.textContent = isPlaying ? '⏸ Pause the bus' : '▶ Start the bus';
+    miniPlayBtn.textContent = isPlaying ? '⏸' : '▶';
+    miniDot.classList.toggle('on', isPlaying);
+    liveDot.classList.toggle('on', isPlaying);
+    miniSub.textContent = isPlaying ? 'now playing on Local Bus' : 'tap play to start the bus';
   }
 
-  // ---- local ambient soundscape (original, no rights issues) ----
-  const ambientAudio = document.getElementById('ambientAudio');
-  const ambienceToggle = document.getElementById('ambienceToggle');
-  const heroAmbienceBtn = document.getElementById('heroAmbienceBtn');
-  const miniAmbienceToggle = document.getElementById('miniAmbienceToggle');
-  const miniSub = document.getElementById('miniSub');
-  const miniDot = document.getElementById('miniDot');
-  const liveDot = document.getElementById('liveDot');
-  ambientAudio.volume = 0.55;
-  let ambienceOn = false;
+  playBtn.addEventListener('click', togglePlay);
+  heroPlayBtn.addEventListener('click', togglePlay);
+  miniPlayBtn.addEventListener('click', togglePlay);
+  prevBtn.addEventListener('click', ()=> loadRoute((current-1+routes.length)%routes.length, isPlaying));
+  nextBtn.addEventListener('click', ()=> loadRoute((current+1)%routes.length, isPlaying));
 
-  function setAmbience(on){
-    if(on){
-      ambientAudio.play().then(()=>{
-        ambienceOn = true;
-        reflectAmbienceUI();
-      }).catch(()=>{
-        miniSub.textContent = 'Playback blocked by the browser — tap again';
-      });
-    } else {
-      ambientAudio.pause();
-      ambienceOn = false;
-      reflectAmbienceUI();
+  audio.addEventListener('timeupdate', ()=>{
+    if(audio.duration){
+      progressFill.style.width = (audio.currentTime/audio.duration*100) + '%';
+      timeElapsed.textContent = fmtTime(audio.currentTime);
     }
-  }
-  function reflectAmbienceUI(){
-    ambienceToggle.classList.toggle('on', ambienceOn);
-    ambienceToggle.querySelector('.pill-text').textContent = ambienceOn ? '🔊 Ambience on' : '🔊 Ambience';
-    heroAmbienceBtn.textContent = ambienceOn ? '🔊 Ambience playing' : '🔊 Start the ambience';
-    miniAmbienceToggle.textContent = ambienceOn ? '⏸ Pause' : '🔊 Play';
-    miniAmbienceToggle.classList.toggle('on', ambienceOn);
-    miniDot.classList.toggle('on', ambienceOn);
-    liveDot.classList.toggle('on', ambienceOn);
-    miniSub.textContent = ambienceOn ? 'the road, playing quietly' : 'tap to start the soundscape';
-  }
-  ambienceToggle.addEventListener('click', ()=> setAmbience(!ambienceOn));
-  heroAmbienceBtn.addEventListener('click', ()=> setAmbience(!ambienceOn));
-  miniAmbienceToggle.addEventListener('click', ()=> setAmbience(!ambienceOn));
+  });
+  audio.addEventListener('loadedmetadata', ()=>{
+    timeTotal.textContent = fmtTime(audio.duration);
+  });
+  audio.addEventListener('ended', ()=> loadRoute((current+1)%routes.length, true));
+
+  progressTrack.addEventListener('click', (e)=>{
+    if(!audio.duration) return;
+    const rect = progressTrack.getBoundingClientRect();
+    const pct = Math.min(1, Math.max(0, (e.clientX-rect.left)/rect.width));
+    audio.currentTime = pct*audio.duration;
+  });
+
+  volumeSlider.addEventListener('input', ()=>{
+    audio.volume = volumeSlider.value/100;
+  });
+  audio.volume = volumeSlider.value/100;
 
   // live clock (viewer's local time)
   const clockEl = document.getElementById('clock');
@@ -433,7 +485,7 @@
 
   renderRoutes();
   renderManifest();
-  selectRoute(routes[0].key, false);
+  loadRoute(0, false);
 })();
 </script>
 </body>
